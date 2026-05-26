@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+.env
+.env.local
+.vite/
+coverage/
+config.json
+# Upstream assets fetched via `pnpm fetch-assets` — never commit.
+apps/ui/public/assets/

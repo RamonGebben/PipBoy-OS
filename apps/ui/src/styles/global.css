@@ -1,0 +1,65 @@
+/* Theme defaults — overridden by themes/* */
+:root {
+  --phosphor: #18ff7d;
+  --phosphor-glow: rgba(24, 255, 125, 0.45);
+  --phosphor-dim: rgba(24, 255, 125, 0.25);
+  --phosphor-faint: rgba(24, 255, 125, 0.12);
+  --bg: #0a1a0e;
+  --bg-deep: #050a07;
+  --scanline: rgba(0, 0, 0, 0.22);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background: var(--bg-deep);
+  color: var(--phosphor);
+  font-family: "ShareTechMono", "Courier New", monospace;
+  font-size: clamp(12px, 1.6vmin, 18px);
+  overflow: hidden;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  text-rendering: optimizeSpeed;
+}
+
+button {
+  background: transparent;
+  color: inherit;
+  border: 1px solid var(--phosphor-dim);
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0.4em 0.8em;
+  cursor: pointer;
+}
+
+button:hover,
+button:focus,
+button.active {
+  background: var(--phosphor-faint);
+  outline: none;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--phosphor-dim);
+}
+
+@font-face {
+  font-family: "ShareTechMono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Share Tech Mono"), local("ShareTechMono");
+}

@@ -1,0 +1,43 @@
+/* Fallout 4 green (default) */
+:root[data-theme="green"] {
+  --phosphor: #18ff7d;
+  --phosphor-glow: rgba(24, 255, 125, 0.45);
+  --phosphor-dim: rgba(24, 255, 125, 0.30);
+  --phosphor-faint: rgba(24, 255, 125, 0.12);
+  --bg: #0a1a0e;
+  --bg-deep: #050a07;
+  --scanline: rgba(0, 0, 0, 0.22);
+}
+
+/* Fallout 3 / New Vegas amber */
+:root[data-theme="amber"] {
+  --phosphor: #ffb641;
+  --phosphor-glow: rgba(255, 182, 65, 0.45);
+  --phosphor-dim: rgba(255, 182, 65, 0.30);
+  --phosphor-faint: rgba(255, 182, 65, 0.12);
+  --bg: #1a1208;
+  --bg-deep: #0a0703;
+  --scanline: rgba(0, 0, 0, 0.22);
+}
+
+/* Bright white phosphor */
+:root[data-theme="white"] {
+  --phosphor: #d4e6ff;
+  --phosphor-glow: rgba(212, 230, 255, 0.45);
+  --phosphor-dim: rgba(212, 230, 255, 0.30);
+  --phosphor-faint: rgba(212, 230, 255, 0.12);
+  --bg: #0e1218;
+  --bg-deep: #050708;
+  --scanline: rgba(0, 0, 0, 0.22);
+}
+
+/* Cool blue */
+:root[data-theme="blue"] {
+  --phosphor: #3ec1ff;
+  --phosphor-glow: rgba(62, 193, 255, 0.45);
+  --phosphor-dim: rgba(62, 193, 255, 0.30);
+  --phosphor-faint: rgba(62, 193, 255, 0.12);
+  --bg: #07111a;
+  --bg-deep: #03070d;
+  --scanline: rgba(0, 0, 0, 0.22);
+}

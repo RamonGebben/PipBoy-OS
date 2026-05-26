@@ -1,0 +1,74 @@
+.radio {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 0.8em;
+  height: 100%;
+}
+
+.radio .section-title {
+  font-size: 0.9em;
+  letter-spacing: 0.2em;
+  color: var(--phosphor-dim);
+  border-bottom: 1px solid var(--phosphor-dim);
+  padding-bottom: 0.2em;
+  margin: 0 0 0.6em;
+}
+
+.stations ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.stations .row {
+  padding: 0.3em 0.5em;
+  cursor: pointer;
+}
+
+.stations .row.selected {
+  background: var(--phosphor-faint);
+  border-left: 3px solid var(--phosphor);
+}
+
+.hint {
+  color: var(--phosphor-dim);
+  font-size: 0.85em;
+  margin-top: 0.6em;
+  letter-spacing: 0.1em;
+}
+
+.dial {
+  position: relative;
+  padding: 0.4em 0;
+}
+
+.dial-track {
+  position: relative;
+  height: 0.8em;
+  border: 1px solid var(--phosphor-dim);
+}
+
+.dial-needle {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: calc(0.8em + 6px);
+  background: var(--phosphor);
+  transition: left 1200ms ease-out;
+}
+
+.dial-scale {
+  display: grid;
+  grid-template-columns: repeat(21, 1fr);
+  margin-top: 0.3em;
+}
+
+.dial-scale .tick {
+  height: 0.5em;
+  border-left: 1px solid var(--phosphor-dim);
+}
+
+.dial-scale .tick.major {
+  border-left-color: var(--phosphor);
+  height: 0.8em;
+}

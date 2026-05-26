@@ -1,0 +1,33 @@
+.tabstrip {
+  display: flex;
+  border-bottom: 1px solid var(--phosphor-dim);
+  padding: 0.4em 0.6em 0;
+  gap: 0.2em;
+}
+
+.tab {
+  flex: 1;
+  padding: 0.5em 0.4em;
+  border: 1px solid transparent;
+  border-bottom: none;
+  background: transparent;
+  color: var(--phosphor-dim);
+  font-size: 1.2em;
+  letter-spacing: 0.15em;
+  text-align: center;
+  transition: color 120ms ease-out, background-color 120ms ease-out;
+}
+
+.tab:hover:not(:disabled) {
+  color: var(--phosphor);
+}
+
+.tab.active {
+  color: var(--phosphor);
+  border-color: var(--phosphor-dim);
+  background: var(--phosphor-faint);
+}
+
+.tab:disabled {
+  cursor: default;
+}

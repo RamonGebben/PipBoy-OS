@@ -1,0 +1,19 @@
+{
+  "name": "pipboy-os",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev": "pnpm -r --parallel run dev",
+    "dev:ui": "pnpm --filter @pipboy/ui run dev",
+    "dev:sidecar": "pnpm --filter @pipboy/sidecar run dev",
+    "build": "pnpm --filter @pipboy/ui run build && pnpm --filter @pipboy/sidecar run build",
+    "start": "pnpm --filter @pipboy/sidecar run start",
+    "fetch-assets": "node scripts/fetch-assets.mjs",
+    "typecheck": "pnpm -r run typecheck"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

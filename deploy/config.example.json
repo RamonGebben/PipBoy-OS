@@ -1,0 +1,18 @@
+{
+  "ui": {
+    "mode": "normal",
+    "screen": "STAT",
+    "lock": false,
+    "theme": "green",
+    "cycleMs": 8000,
+    "scanlines": true,
+    "bootAnimation": true
+  },
+  "port": 8080,
+  "gpio": {
+    "tabNext": 17,
+    "tabPrev": 27,
+    "select": 22,
+    "back": 23
+  }
+}

@@ -1,0 +1,23 @@
+[Unit]
+Description=PipBoy OS sidecar (Node)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/opt/pipboy/apps/sidecar
+Environment=NODE_ENV=production
+Environment=PIPBOY_PORT=8080
+Environment=PIPBOY_UI_DIST=/opt/pipboy/apps/ui/dist
+# Drop or override to a custom path if you don't use /boot/pipboy.config.json
+# Environment=PIPBOY_CONFIG=/opt/pipboy/config.json
+ExecStart=/usr/bin/node dist/index.js
+Restart=on-failure
+RestartSec=3
+# GPIO needs supplementary group on Pi OS:
+SupplementaryGroups=gpio
+
+[Install]
+WantedBy=multi-user.target

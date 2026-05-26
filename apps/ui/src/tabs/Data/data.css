@@ -1,0 +1,57 @@
+.data {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.8em;
+  height: 100%;
+}
+
+.clock {
+  text-align: center;
+  padding: 0.4em 0 0.6em;
+  border-bottom: 1px solid var(--phosphor-dim);
+}
+
+.clock-time {
+  font-size: clamp(2.4em, 8vmin, 4em);
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+
+.clock-date {
+  font-size: 0.95em;
+  color: var(--phosphor-dim);
+  letter-spacing: 0.15em;
+  margin-top: 0.3em;
+}
+
+.system .section-title {
+  font-size: 0.9em;
+  letter-spacing: 0.2em;
+  color: var(--phosphor-dim);
+  border-bottom: 1px solid var(--phosphor-dim);
+  padding-bottom: 0.2em;
+  margin: 0 0 0.6em;
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: 8em 1fr;
+  gap: 0.4em 1em;
+  margin: 0;
+}
+
+.kv dt {
+  color: var(--phosphor-dim);
+  letter-spacing: 0.1em;
+}
+
+.kv dd {
+  margin: 0;
+}
+
+.offline {
+  margin-top: 0.6em;
+  color: var(--phosphor-dim);
+  font-size: 0.9em;
+  letter-spacing: 0.1em;
+}
