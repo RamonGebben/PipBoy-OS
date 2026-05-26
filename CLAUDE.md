@@ -79,8 +79,12 @@ These cause real frame drops on the target hardware. Apply during code review:
 ## Deploy
 
 - `deploy/start-kiosk.sh` — Chromium kiosk launcher; merges `config.json` and `--flags` into the URL.
-- `deploy/pipboy-sidecar.service` + `pipboy-ui.service` — systemd units; UI waits for sidecar to bind :8080 then runs `startx`.
+- `deploy/pipboy-sidecar.service` — systemd unit for the Node sidecar; used on both Pi OS Lite and Desktop.
+- `deploy/pipboy-ui.service` — systemd unit that runs `startx`; **Pi OS Lite only**. Do not use on Pi OS Desktop — LightDM owns the X session there.
+- `deploy/pipboy-kiosk.desktop` — LXDE autostart entry; **Pi OS Desktop only**. Installs to `/etc/xdg/autostart/`.
 - `docs/PI_SETUP.md` — operator-facing full Pi setup walkthrough. Keep it in sync when changing flags, services, or required apt packages.
+
+**Tested deploy target**: Pi 3B, Pi OS Desktop (Bookworm), install path `/opt/pipboy/PipBoy-OS/`.
 
 ## Workspace layout
 

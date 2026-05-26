@@ -6,8 +6,9 @@ _Last updated: 2026-05-26_
 
 ## Status
 
-- **Builds & runs locally** on macOS (`pnpm install && pnpm fetch-assets && pnpm dev`).
-- **Not yet smoke-tested on a Raspberry Pi 3B.** Everything below the Vite proxy is unverified on real hardware: actual boot time, RSS, GPIO interrupts, `vcgencmd`, X / matchbox / Chromium kiosk autostart, screen blanking suppression. Pi hardware is the next big validation gate.
+- **Running on hardware.** Pi 3B with Pi OS Desktop (Bookworm), deploy confirmed working.
+- Deploy path: `pipboy-sidecar.service` + `deploy/pipboy-kiosk.desktop` (LXDE autostart). `pipboy-ui.service` is not used on Desktop — LightDM owns the X session.
+- Install path on Pi: `/opt/pipboy/PipBoy-OS/`.
 
 ## Recently shipped
 
@@ -20,10 +21,11 @@ _Last updated: 2026-05-26_
   - Right-hand aid items list
   - Bottom sub-tabs (Status / S.P.E.C.I.A.L. / Skills / Perks / General); Status + SPECIAL functional, the rest are placeholders.
 - Asset pipeline (`pnpm fetch-assets`) pulling sprites from `SurvivorGrim/PipBoy-Pi5`.
+- Deploy docs cover both Pi OS Lite (startx via systemd) and Pi OS Desktop (LXDE autostart).
 
 ## Open threads (small)
 
-- **Limb marker positions** are eyeballed in pixels against the walking sprite. Last view from the user looked plausible but no follow-up confirmation — expect ±5 px nudges per limb once the figure is viewed on the target screen size.
+- **Limb marker positions** are eyeballed in pixels against the walking sprite. Now that hardware is running, expect ±5 px nudges per limb when viewed on the actual screen.
 - **No T-pose Vault Boy asset** exists in the upstream we pulled from (`body_1.png` and `legs1/1.png` are the same idle/walking pose). User accepted current walking figure; revisit if a static T-pose sprite is sourced elsewhere.
 - **Config-lock semantics** — `config.lock = true` disables top-tab nav and input sources, but STAT sub-tabs and the condition menu are still freely clickable. May want to extend `lock` to gate all interactive UI if a true kiosk-pin is needed.
 
@@ -37,12 +39,13 @@ _Last updated: 2026-05-26_
 
 ## Suggested next moves (in order)
 
-1. **Pi 3B hardware bring-up**: run `docs/PI_SETUP.md` end-to-end, hit the budgets in CLAUDE.md, fix what doesn't fly. Anything below this is premature without it.
-2. **Phase 2 small wins** (cheap, big visual lift):
+1. **Hardware validation** — now that the kiosk boots, check real Pi metrics: frame rate on tab switch, DATA tab stats (vcgencmd / iwgetid), GPIO button wiring.
+2. **Limb marker pixel nudges** — view STAT tab on actual screen and adjust positions in `stat.css`.
+3. **Phase 2 small wins** (cheap, big visual lift):
    - `monofonto.ttf` font (drop-in, immediate authenticity)
    - 8-frame boot animation replacing the ROBCO text
-3. **SPECIAL sub-tab Vault Boy poses** — animated per-stat figures from `images/stats/special/*`.
-4. **INV tab item rotations** — bind a few `images/inventory/<item>/000–023.png` sequences to the currently-selected inventory row.
+4. **SPECIAL sub-tab Vault Boy poses** — animated per-stat figures from `images/stats/special/*`.
+5. **INV tab item rotations** — bind a few `images/inventory/<item>/000–023.png` sequences to the currently-selected inventory row.
 
 ## Don't-trip-on-this
 
@@ -51,3 +54,4 @@ _Last updated: 2026-05-26_
 - All CSS color values must be theme variables (`var(--phosphor)` etc.). Hard-coded colors break the theme swap.
 - Mask-image-based sprite tinting needs both `mask-image` and `-webkit-mask-image` (Chromium on the Pi is recent enough to drop the prefix, but Vite preview / older Safari isn't).
 - The `STEPS = [0,1,2,3,4,3,2,1]` breathing offset and 125 ms cycle mirror the upstream Pygame timing — don't change without checking how it looks.
+- **Pi OS Desktop deploy**: `pipboy-ui.service` is intentionally not installed — use `pipboy-kiosk.desktop` (LXDE autostart) instead. Do not enable `pipboy-ui.service` on Desktop; it will conflict with LightDM.
