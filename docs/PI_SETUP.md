@@ -1,7 +1,12 @@
 # PipBoy OS — Raspberry Pi 3B setup
 
 This guide takes a fresh Raspberry Pi 3B and configures it to autoboot into the
-PipBoy UI in fullscreen kiosk mode. Tested target: **Raspberry Pi OS Lite (64‑bit, Bookworm)**.
+PipBoy UI in fullscreen kiosk mode.
+
+Two supported targets:
+
+- **Pi OS Lite (64-bit, Bookworm)** — headless, launches its own X server via systemd. Follow all sections.
+- **Pi OS Desktop (Bookworm)** — LightDM manages the X session. Skip §5 and §6; follow §6a instead.
 
 > Pi 3B is the floor — anything newer (3B+, 4, 5, Zero 2 W) works the same way
 > and will feel faster.
@@ -85,11 +90,13 @@ Example overrides:
 
 URL args at launch always win over the file (see §7).
 
-## 5. Allow X to start from a systemd service
+## 5. Allow X to start from a systemd service *(Pi OS Lite only)*
 
-On Bookworm, X.Org needs elevated rights to call `drmSetMaster` (get exclusive
-KMS/DRM control). When launched via systemd the Xorg process isn't part of a
-logind seat session, so it must use the setuid wrapper instead:
+> **Pi OS Desktop**: skip this section — LightDM owns the X session.
+
+On Bookworm Lite, X.Org needs elevated rights to call `drmSetMaster` (get
+exclusive KMS/DRM control). When launched via systemd the Xorg process isn't
+part of a logind seat session, so it must use the setuid wrapper instead:
 
 ```bash
 sudo tee /etc/X11/Xwrapper.config <<'EOF'
@@ -102,7 +109,9 @@ EOF
 handshake then drop back. Without this you get
 `drmSetMaster failed: Permission denied` and X exits immediately.
 
-## 6. Install systemd services
+## 6. Install systemd services *(Pi OS Lite only)*
+
+> **Pi OS Desktop**: skip this section — use §6a instead.
 
 ```bash
 sudo cp /opt/pipboy/PipBoy-OS/deploy/pipboy-sidecar.service /etc/systemd/system/
@@ -123,6 +132,33 @@ Reboot to verify the UI service starts the kiosk on boot:
 ```bash
 sudo reboot
 ```
+
+## 6a. Install services on Pi OS Desktop
+
+LightDM manages the X session, so `pipboy-ui.service` (which launches its own
+X server) must not be used. Instead, install only the sidecar service and add
+Chromium kiosk as an LXDE autostart entry:
+
+```bash
+# Sidecar service (same as Lite)
+sudo cp /opt/pipboy/PipBoy-OS/deploy/pipboy-sidecar.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable pipboy-sidecar
+sudo systemctl start  pipboy-sidecar
+
+# Test the sidecar
+curl http://localhost:8080/api/system | jq
+
+# Kiosk autostart — runs inside the existing desktop X session on login
+sudo cp /opt/pipboy/PipBoy-OS/deploy/pipboy-kiosk.desktop /etc/xdg/autostart/
+```
+
+Configure auto-login if not already set (via `sudo raspi-config` →
+System Options → Boot / Auto Login → Desktop Autologin).
+
+Reboot; the desktop will appear briefly then Chromium will cover it in kiosk
+mode. To suppress the taskbar while in kiosk mode, right-click the panel →
+Panel Settings → Advanced → Minimise panel when not in use.
 
 ## 7. Override behaviour from autostart (CLI flags)
 
@@ -227,10 +263,14 @@ sudo systemctl restart pipboy-sidecar pipboy-ui
 
 ## Troubleshooting
 
-- **`drmSetMaster failed: Permission denied` / `AddScreen/ScreenInit failed`**:
-  `/etc/X11/Xwrapper.config` is missing or incorrect — follow §5.
-- **Black screen on boot**: `journalctl -u pipboy-ui -e` — usually missing
-  `xserver-xorg` or wrong TTY.
+- **`drmSetMaster failed: Permission denied` / `AddScreen/ScreenInit failed`**
+  *(Pi OS Lite)*: `/etc/X11/Xwrapper.config` is missing or incorrect — follow §5.
+- **Kiosk doesn't start on Desktop**: check `journalctl -u pipboy-sidecar -e`
+  first (sidecar must be running), then check `~/.xsession-errors` for Chromium
+  launch errors. Confirm `/etc/xdg/autostart/pipboy-kiosk.desktop` exists and
+  auto-login is enabled.
+- **Black screen on boot** *(Lite)*: `journalctl -u pipboy-ui -e` — usually
+  missing `xserver-xorg` or wrong TTY.
 - **`/api/system` returns nulls**: that's expected on macOS dev. On Pi, check
   `vcgencmd` and `iwgetid` exist (`apt install libraspberrypi-bin wireless-tools`).
 - **GPIO doesn't fire**: confirm `pi` is in the `gpio` group (`groups pi`) and

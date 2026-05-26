@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=PipBoy Kiosk
+Exec=/opt/pipboy/PipBoy-OS/deploy/start-kiosk.sh
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
