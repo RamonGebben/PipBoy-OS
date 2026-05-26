@@ -83,9 +83,26 @@ Example overrides:
 }
 ```
 
-URL args at launch always win over the file (see §6).
+URL args at launch always win over the file (see §7).
 
-## 5. Install systemd services
+## 5. Allow X to start from a systemd service
+
+On Bookworm, X.Org needs elevated rights to call `drmSetMaster` (get exclusive
+KMS/DRM control). When launched via systemd the Xorg process isn't part of a
+logind seat session, so it must use the setuid wrapper instead:
+
+```bash
+sudo tee /etc/X11/Xwrapper.config <<'EOF'
+allowed_users=anybody
+needs_root_rights=yes
+EOF
+```
+
+`needs_root_rights=yes` makes the Xorg wrapper elevate briefly for the DRM
+handshake then drop back. Without this you get
+`drmSetMaster failed: Permission denied` and X exits immediately.
+
+## 6. Install systemd services
 
 ```bash
 sudo cp /opt/pipboy/PipBoy-OS/deploy/pipboy-sidecar.service /etc/systemd/system/
@@ -107,7 +124,7 @@ Reboot to verify the UI service starts the kiosk on boot:
 sudo reboot
 ```
 
-## 6. Override behaviour from autostart (CLI flags)
+## 7. Override behaviour from autostart (CLI flags)
 
 `start-kiosk.sh` accepts `--key=value` flags that turn into URL args. These
 override anything in `config.json`. Examples:
@@ -134,7 +151,7 @@ Supported flags:
 To bake flags into autostart, edit the systemd unit and change `ExecStart` to
 `startx /opt/pipboy/PipBoy-OS/deploy/start-kiosk.sh --mode=demo --theme=amber -- -nocursor`.
 
-## 7. Pi-specific performance tweaks
+## 8. Pi-specific performance tweaks
 
 Edit `/boot/firmware/config.txt` (Bookworm) or `/boot/config.txt` (older):
 
@@ -163,7 +180,7 @@ sudo dphys-swapfile swapoff
 sudo systemctl disable dphys-swapfile
 ```
 
-## 8. GPIO buttons (optional)
+## 9. GPIO buttons (optional)
 
 Wire each button between the GPIO pin and **GND**. The sidecar uses `onoff`
 with internal pull-up + falling-edge interrupts.
@@ -181,7 +198,7 @@ The `pi` user is added to the `gpio` group by `pipboy-sidecar.service`
 (`SupplementaryGroups=gpio`). If the service warns that `onoff` is missing,
 re-run `pnpm install` on the Pi (Node must rebuild the native bits on ARM).
 
-## 9. Lighter-weight alternative (optional)
+## 10. Lighter-weight alternative (optional)
 
 If you want to reclaim ~80 MB RAM on the Pi 3B, swap Chromium for **cog**
 (WPE WebKit kiosk browser):
@@ -198,7 +215,7 @@ ExecStart=/usr/bin/cog --platform=drm --fullscreen "http://localhost:8080/?$(nod
 
 Caveats: no DevTools, less ergonomic to debug, some CSS edge cases differ.
 
-## 10. Updating
+## 11. Updating
 
 ```bash
 cd /opt/pipboy/PipBoy-OS
@@ -210,16 +227,8 @@ sudo systemctl restart pipboy-sidecar pipboy-ui
 
 ## Troubleshooting
 
-- **`AddScreen/ScreenInit failed for driver 0`** (X server exits immediately):
-  the `pi` user can't open `/dev/dri/card0`. Make sure `gpu_mem=128` is in
-  `/boot/firmware/config.txt` (§7), then reload the unit and restart:
-  ```bash
-  sudo systemctl daemon-reload
-  sudo systemctl restart pipboy-ui
-  ```
-  The updated `pipboy-ui.service` already includes `SupplementaryGroups=video render`
-  — if you deployed before this fix, re-copy the service file and re-run the two
-  commands above.
+- **`drmSetMaster failed: Permission denied` / `AddScreen/ScreenInit failed`**:
+  `/etc/X11/Xwrapper.config` is missing or incorrect — follow §5.
 - **Black screen on boot**: `journalctl -u pipboy-ui -e` — usually missing
   `xserver-xorg` or wrong TTY.
 - **`/api/system` returns nulls**: that's expected on macOS dev. On Pi, check
