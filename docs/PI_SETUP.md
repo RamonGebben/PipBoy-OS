@@ -59,6 +59,7 @@ sudo chown pi:pi /opt/pipboy/PipBoy-OS
 cd /opt/pipboy/PipBoy-OS
 git clone <your-fork-url> .          # or rsync from your dev machine
 pnpm install
+pnpm fetch-assets                    # download Vault Boy sprites (requires internet)
 pnpm build
 ```
 

@@ -85,10 +85,11 @@
 }
 
 .vaultboy-figure {
+  /* scales with viewport height; width follows the original 100:180 aspect ratio */
+  --fig-h: clamp(140px, 30vh, 420px);
   position: relative;
-  width: 100px;
-  height: 180px;
-  /* allow limb markers to extend beyond the 100px figure box */
+  height: var(--fig-h);
+  width: calc(var(--fig-h) * 100 / 180);
   overflow: visible;
 }
 
@@ -96,7 +97,7 @@
 .vb-head {
   position: absolute;
   background-color: var(--phosphor);
-  filter: drop-shadow(0 0 3px var(--phosphor-glow));
+  /* no filter — drop-shadow on an animated element breaks Pi 3B GPU */
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-position: center;
@@ -106,18 +107,19 @@
   will-change: transform;
 }
 
+/* positions as % of the 100×180 figure box so they scale with --fig-h */
 .vb-legs {
-  left: 5px;
-  top: 62px;
-  width: 75px;
-  height: 109px;
+  left: 5%;
+  top: 34.4%;
+  width: 75%;
+  height: 60.6%;
 }
 
 .vb-head {
-  left: 22px;
-  top: 19px;
-  width: 38px;
-  height: 51px;
+  left: 22%;
+  top: 10.6%;
+  width: 38%;
+  height: 28.3%;
   -webkit-mask-image: url("/assets/stats/head1/1.png");
   mask-image: url("/assets/stats/head1/1.png");
 }
@@ -146,43 +148,44 @@
 
 .limb-bracket {
   display: inline-block;
-  width: 14px;
-  height: 4px;
+  width: 1em;
+  height: 0.28em;
   border: 1px solid var(--phosphor);
   border-bottom: none;
   flex-shrink: 0;
 }
 
+/* positions as % of the 100×180 figure box */
 .limb-head {
-  top: 6px;
+  top: 3.3%;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .limb-arm-r {
-  top: 78px;
-  left: 86px;
+  top: 43.3%;
+  left: 86%;
 }
 
 .limb-arm-l {
-  top: 78px;
-  right: 86px;
+  top: 43.3%;
+  right: 86%;
   flex-direction: row-reverse;
 }
 
 .limb-torso {
-  top: 100px;
-  left: 80px;
+  top: 55.6%;
+  left: 80%;
 }
 
 .limb-leg-r {
-  top: 150px;
-  left: 80px;
+  top: 83.3%;
+  left: 80%;
 }
 
 .limb-leg-l {
-  top: 150px;
-  right: 80px;
+  top: 83.3%;
+  right: 80%;
   flex-direction: row-reverse;
 }
 

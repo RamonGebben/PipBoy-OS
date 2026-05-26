@@ -25,7 +25,7 @@ body,
   background: var(--bg-deep);
   color: var(--phosphor);
   font-family: "ShareTechMono", "Courier New", monospace;
-  font-size: clamp(12px, 1.6vmin, 18px);
+  font-size: clamp(14px, 2.2vmin, 28px);
   overflow: hidden;
   -webkit-font-smoothing: none;
   font-smooth: never;
