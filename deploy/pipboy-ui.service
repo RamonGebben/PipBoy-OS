@@ -10,13 +10,14 @@ Group=pi
 PAMName=login
 Environment=HOME=/home/pi
 Environment=XAUTHORITY=/home/pi/.Xauthority
-Environment=PIPBOY_ROOT=/opt/pipboy
+Environment=PIPBOY_ROOT=/opt/pipboy/PipBoy-OS
 Environment=PIPBOY_URL=http://localhost:8080
 # Wait briefly for the sidecar to bind, then start X with the kiosk script.
 ExecStartPre=/bin/sh -c 'for i in $(seq 1 20); do nc -z localhost 8080 && exit 0; sleep 1; done; exit 0'
-ExecStart=/usr/bin/startx /opt/pipboy/deploy/start-kiosk.sh -- -nocursor
+ExecStart=/usr/bin/startx /opt/pipboy/PipBoy-OS/deploy/start-kiosk.sh -- -nocursor
 Restart=on-failure
 RestartSec=3
+SupplementaryGroups=video render
 TTYPath=/dev/tty7
 TTYReset=yes
 TTYVHangup=yes

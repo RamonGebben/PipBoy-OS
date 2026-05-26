@@ -10,7 +10,7 @@
 
 set -euo pipefail
 
-REPO_ROOT="${PIPBOY_ROOT:-/opt/pipboy}"
+REPO_ROOT="${PIPBOY_ROOT:-/opt/pipboy/PipBoy-OS}"
 SIDECAR_URL="${PIPBOY_URL:-http://localhost:8080}"
 
 # Stop the screen from blanking / cursor from showing.

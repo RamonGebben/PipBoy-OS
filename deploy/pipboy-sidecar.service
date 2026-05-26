@@ -7,12 +7,12 @@ Wants=network-online.target
 Type=simple
 User=pi
 Group=pi
-WorkingDirectory=/opt/pipboy/apps/sidecar
+WorkingDirectory=/opt/pipboy/PipBoy-OS/apps/sidecar
 Environment=NODE_ENV=production
 Environment=PIPBOY_PORT=8080
-Environment=PIPBOY_UI_DIST=/opt/pipboy/apps/ui/dist
+Environment=PIPBOY_UI_DIST=/opt/pipboy/PipBoy-OS/apps/ui/dist
 # Drop or override to a custom path if you don't use /boot/pipboy.config.json
-# Environment=PIPBOY_CONFIG=/opt/pipboy/config.json
+# Environment=PIPBOY_CONFIG=/opt/pipboy/PipBoy-OS/config.json
 ExecStart=/usr/bin/node dist/index.js
 Restart=on-failure
 RestartSec=3

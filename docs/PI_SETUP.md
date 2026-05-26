@@ -49,9 +49,9 @@ sudo npm install -g pnpm@9
 ## 3. Deploy the code
 
 ```bash
-sudo mkdir -p /opt/pipboy
-sudo chown pi:pi /opt/pipboy
-cd /opt/pipboy
+sudo mkdir -p /opt/pipboy/PipBoy-OS
+sudo chown pi:pi /opt/pipboy/PipBoy-OS
+cd /opt/pipboy/PipBoy-OS
 git clone <your-fork-url> .          # or rsync from your dev machine
 pnpm install
 pnpm build
@@ -69,7 +69,7 @@ The setup looks for, in order:
 Drop your config in the most convenient location:
 
 ```bash
-sudo cp /opt/pipboy/deploy/config.example.json /boot/firmware/pipboy.config.json
+sudo cp /opt/pipboy/PipBoy-OS/deploy/config.example.json /boot/firmware/pipboy.config.json
 sudo nano /boot/firmware/pipboy.config.json
 ```
 
@@ -88,8 +88,8 @@ URL args at launch always win over the file (see §6).
 ## 5. Install systemd services
 
 ```bash
-sudo cp /opt/pipboy/deploy/pipboy-sidecar.service /etc/systemd/system/
-sudo cp /opt/pipboy/deploy/pipboy-ui.service      /etc/systemd/system/
+sudo cp /opt/pipboy/PipBoy-OS/deploy/pipboy-sidecar.service /etc/systemd/system/
+sudo cp /opt/pipboy/PipBoy-OS/deploy/pipboy-ui.service      /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable pipboy-sidecar pipboy-ui
 sudo systemctl start  pipboy-sidecar
@@ -113,9 +113,9 @@ sudo reboot
 override anything in `config.json`. Examples:
 
 ```bash
-/opt/pipboy/deploy/start-kiosk.sh --mode=demo --theme=amber
-/opt/pipboy/deploy/start-kiosk.sh --screen=DATA --lock=true
-/opt/pipboy/deploy/start-kiosk.sh --no-scanlines --boot=false
+/opt/pipboy/PipBoy-OS/deploy/start-kiosk.sh --mode=demo --theme=amber
+/opt/pipboy/PipBoy-OS/deploy/start-kiosk.sh --screen=DATA --lock=true
+/opt/pipboy/PipBoy-OS/deploy/start-kiosk.sh --no-scanlines --boot=false
 ```
 
 Supported flags:
@@ -132,7 +132,7 @@ Supported flags:
 | `--boot=` | `true`, `false` | Show the boot animation on launch |
 
 To bake flags into autostart, edit the systemd unit and change `ExecStart` to
-`startx /opt/pipboy/deploy/start-kiosk.sh --mode=demo --theme=amber -- -nocursor`.
+`startx /opt/pipboy/PipBoy-OS/deploy/start-kiosk.sh --mode=demo --theme=amber -- -nocursor`.
 
 ## 7. Pi-specific performance tweaks
 
@@ -193,7 +193,7 @@ sudo apt install -y cog
 Replace the `ExecStart` line in `pipboy-ui.service` with:
 
 ```
-ExecStart=/usr/bin/cog --platform=drm --fullscreen "http://localhost:8080/?$(node /opt/pipboy/deploy/config-to-args.js)"
+ExecStart=/usr/bin/cog --platform=drm --fullscreen "http://localhost:8080/?$(node /opt/pipboy/PipBoy-OS/deploy/config-to-args.js)"
 ```
 
 Caveats: no DevTools, less ergonomic to debug, some CSS edge cases differ.
@@ -201,7 +201,7 @@ Caveats: no DevTools, less ergonomic to debug, some CSS edge cases differ.
 ## 10. Updating
 
 ```bash
-cd /opt/pipboy
+cd /opt/pipboy/PipBoy-OS
 git pull
 pnpm install
 pnpm build
@@ -210,6 +210,16 @@ sudo systemctl restart pipboy-sidecar pipboy-ui
 
 ## Troubleshooting
 
+- **`AddScreen/ScreenInit failed for driver 0`** (X server exits immediately):
+  the `pi` user can't open `/dev/dri/card0`. Make sure `gpu_mem=128` is in
+  `/boot/firmware/config.txt` (§7), then reload the unit and restart:
+  ```bash
+  sudo systemctl daemon-reload
+  sudo systemctl restart pipboy-ui
+  ```
+  The updated `pipboy-ui.service` already includes `SupplementaryGroups=video render`
+  — if you deployed before this fix, re-copy the service file and re-run the two
+  commands above.
 - **Black screen on boot**: `journalctl -u pipboy-ui -e` — usually missing
   `xserver-xorg` or wrong TTY.
 - **`/api/system` returns nulls**: that's expected on macOS dev. On Pi, check
