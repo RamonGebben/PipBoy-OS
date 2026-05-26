@@ -60,7 +60,7 @@ fi
 
 exec "$CHROMIUM" \
   --kiosk \
-  --force-device-scale-factor=2 \
+  --force-device-scale-factor=1.5 \
   --noerrdialogs \
   --disable-translate \
   --disable-features=TranslateUI,Translate \
